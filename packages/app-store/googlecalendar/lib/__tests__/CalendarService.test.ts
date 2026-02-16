@@ -462,6 +462,7 @@ describe("createEvent", () => {
       ],
       iCalUID: "test-ical-uid@google.com",
       conferenceData: undefined,
+      hideOrganizerEmail: false,
       hideCalendarEventDetails: false,
       seatsPerTimeSlot: null,
       seatsShowAttendees: true,
@@ -522,7 +523,7 @@ describe("createEvent", () => {
           },
           "summary": "Test Meeting",
         },
-        "sendUpdates": "none",
+        "sendUpdates": "all",
       }
     `);
 

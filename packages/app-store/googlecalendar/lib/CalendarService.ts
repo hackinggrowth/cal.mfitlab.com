@@ -112,6 +112,10 @@ class GoogleCalendarService implements Calendar {
     return { useDefault: true };
   }
 
+  private getSendUpdates(hideOrganizerEmail?: boolean): "all" | "none" {
+    return hideOrganizerEmail === false ? "all" : "none";
+  }
+
   public getCredentialId() {
     return this.credential.id;
   }
@@ -284,7 +288,7 @@ class GoogleCalendarService implements Calendar {
           calendarId: selectedCalendar,
           requestBody: payload,
           conferenceDataVersion: 1,
-          sendUpdates: "none",
+          sendUpdates: this.getSendUpdates(calEvent.hideOrganizerEmail),
         });
         event = eventResponse.data;
         if (event.recurrence) {
@@ -406,7 +410,7 @@ class GoogleCalendarService implements Calendar {
         calendarId: selectedCalendar,
         eventId: uid,
         sendNotifications: true,
-        sendUpdates: "none",
+        sendUpdates: this.getSendUpdates(event.hideOrganizerEmail),
         requestBody: payload,
         conferenceDataVersion: 1,
       });
@@ -466,13 +470,13 @@ class GoogleCalendarService implements Calendar {
     const selectedCalendar = externalCalendarId || "primary";
 
     try {
-      const event = await calendar.events.delete({
+      const deletedEvent = await calendar.events.delete({
         calendarId: selectedCalendar,
         eventId: uid,
         sendNotifications: false,
-        sendUpdates: "none",
+        sendUpdates: this.getSendUpdates(event.hideOrganizerEmail),
       });
-      return event?.data;
+      return deletedEvent?.data;
     } catch (error) {
       this.log.error(
         "There was an error deleting event from google calendar: ",
